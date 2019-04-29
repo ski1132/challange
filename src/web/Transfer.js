@@ -15,7 +15,8 @@ export default class Home extends Component{
         console.log("amount = "+this.state.amount);
         if( parseInt(this.state.amount,10) <= parseInt(localStorage.getItem('balance'), 10) ){
             var today = new Date(),
-            Dates = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            Dates = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + 'h:' + today.getMinutes() + 'm:' + today.getSeconds() + 's';
+            console.log("date = "+ Dates);
             await axios.post('http://localhost:5000/makeTrans',
             {
                 id_owner : localStorage.getItem('account_id'),

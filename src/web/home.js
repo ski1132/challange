@@ -7,6 +7,7 @@ export default class Home extends Component{
     state = {
         balance:0,
         checkFirst:true,
+        dataTran:{},
         dates:""
 
     }
@@ -25,6 +26,8 @@ export default class Home extends Component{
         {
             id : localStorage.getItem('id_owner')
         })
+        const http1 = await axios.post('http://localhost:5000/getHis',{})
+        this.setState({dataTran:http1.data});
         console.log(http.data[0]);
         if(http.data[0] ){
             this.setState({balance:http.data[0].balance});
@@ -43,24 +46,34 @@ export default class Home extends Component{
         else
             return <Button size="20" color="secondary" > Can't transfer </Button> ;
     }
-    showHis = async () =>{
-        const http = await axios.post('http://localhost:5000/getHis',{})
-        console.log(http.data);
-        var data;
-        for(var i=0;i<http.data.langth();i++)
+    showHis = () =>{
+        var dataHis=[];
+        dataHis.push(
+            <thead>
+                                <tr>
+                                    <th>ID Transaction</th>
+                                    <th> Owner</th>
+                                    <th> Amount </th>
+                                    <th> Date </th>
+                                    <th> Comment </th>
+                                </tr>
+                            </thead>
+    )
+        for(var i=0;i<this.state.dataTran.length;i++)
         {
-            data[i] = http.data[i].id_owner;
-            // <div>
-            // <tr>
-            //     <th scope="row">1</th>
-            //     <td>Mark</td>
-            //     <td>Otto</td>
-            //     <td>@mdo</td>
-            //     <td>@mdo</td>
-            //  </tr>
-            //  </div>
+            dataHis.push( <tbody>
+                    <tr>
+                        <th scope="row" key={this.state.dataTran[i]._id.toString()}> {this.state.dataTran[i]._id} </th>
+                        <td key={this.state.dataTran[i].id_transfer}> {this.state.dataTran[i].id_transfer} </td>
+                        <td> {this.state.dataTran[i].amount} </td>
+                        <td> {this.state.dataTran[i].date} </td>
+                        <td> {this.state.dataTran[i].comment} </td>
+                    </tr></tbody>
+            )
+            
         }
-        return <Button size="20" color="secondary" > Can't transfer </Button> ;
+
+        return ( dataHis );
             
     }
     render(){
@@ -93,28 +106,10 @@ export default class Home extends Component{
                     <Col xs="12" align="center"> &nbsp; </Col>
                 </Row>
                 <Row>
-                    <Col xs="3" > &nbsp; </Col>
-                    <Col xs="6" >
-                        <Table align="center" className="Table" striped bordered hover size="sm" responsive="sm">
-                            <thead>
-                                <tr>
-                                    <th>ID Transaction</th>
-                                    <th> Owner</th>
-                                    <th> Amount </th>
-                                    <th> Date </th>
-                                    <th> Comment </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>@mdo</td>
-                            </tr>
-                                {/* {this.showHis()} */}
-                            </tbody>
+                    <Col xs="1" > &nbsp; </Col>
+                    <Col xs="10" >
+                    <Table align="center" className="Table" striped bordered hover size="sm" responsive="sm">
+                                {this.showHis()}
                         </Table>
                     </Col>
                 </Row>
